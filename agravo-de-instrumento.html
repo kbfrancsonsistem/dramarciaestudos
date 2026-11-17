@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agravo de Instrumento: estudo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,600;7..72,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: sereno, de estudo jurídico, preciso
+   IDEA: fichário de fichas pautadas de um código anotado
+   PICTURE: a ficha grande que vira, logo no topo
+   COLOUR and TYPE: branco, bordô de capa de código, verde-petróleo de acento; Literata + Inter
+   LAYOUT: abas Flashcards / Mapa mental; ficha central com controles abaixo; mapa em ramos */
+:root{color-scheme:light dark;
+--bg:light-dark(#ffffff,#16110f);--ink:light-dark(#1d1714,#f1e9e4);--mut:light-dark(#6b605a,#b5a8a0);
+--wine:light-dark(#7a1f2b,#e0808c);--wineD:light-dark(#5e1520,#c86672);--teal:light-dark(#0f6e66,#5cc9bd);
+--card:light-dark(#fffdfb,#221a17);--line:light-dark(#e8dcd6,#3a2d28);--rule:light-dark(#f0e4de,#2c221e);
+--b0:light-dark(#7a1f2b,#e0808c);--b1:light-dark(#0f6e66,#5cc9bd);--b2:light-dark(#8a5a12,#e3b25c);--b3:light-dark(#3d4f8a,#93a5e8)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+.band{padding:clamp(20px,3.5vw,48px) max(5vw,16px);max-width:1240px;margin:0 auto}
+h1{font:700 clamp(28px,4.4vw,44px)/1.05 Literata,Georgia,serif;margin:0 0 6px;text-wrap:balance}
+.sub{color:var(--mut);margin:0 0 18px;font-size:15px}
+header{background:var(--wine);color:#fff}
+header .band{padding-bottom:0}
+header h1{color:#fff}header .sub{color:#f3d9dc}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tabs a{color:#f3d9dc;text-decoration:none;padding:12px 18px;border-radius:10px 10px 0 0;font-weight:600;min-height:44px}
+.tabs a[aria-current=true]{background:var(--bg);color:var(--wine)}
+.tabs a:focus-visible,button:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip,.btn{font:500 15px Inter,sans-serif;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 15px;min-height:44px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.p{background:var(--wine);border-color:var(--wine);color:#fff}
+.btn.ok{border-color:var(--teal);color:var(--teal)}
+.btn.no{border-color:var(--wine);color:var(--wine)}
+.btn:disabled{opacity:.4;cursor:default}
+.meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:16px 0 8px;color:var(--mut);font-size:14px}
+.bar{height:6px;background:var(--rule);border-radius:9px;overflow:hidden;margin-bottom:16px}.bar i{display:block;height:100%;background:var(--teal);transition:width .3s}
+.stage{perspective:1600px;max-width:820px;margin:0 auto}
+.flip{position:relative;min-height:clamp(300px,46vh,420px);cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.3,.7,.2,1)}
+.flip.on{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;background:var(--card);border:1.5px solid var(--line);box-shadow:0 1px 0 var(--line),0 18px 40px -22px rgba(60,20,20,.35);padding:clamp(22px,4vw,40px);display:flex;flex-direction:column;overflow:auto;
+background-image:repeating-linear-gradient(transparent 0 31px,var(--rule) 31px 32px);background-position:0 66px}
+.face.back{transform:rotateY(180deg)}
+.face .tag{font-size:13px;font-weight:600;color:var(--c);display:flex;justify-content:space-between;gap:10px;margin-bottom:14px}
+.face .tag:before{content:"";position:absolute;left:0;top:22px;bottom:22px;width:5px;border-radius:0 4px 4px 0;background:var(--c)}
+.q{font:600 clamp(20px,2.8vw,28px)/1.3 Literata,Georgia,serif;margin:auto 0;text-wrap:balance}
+.a{font-size:17px;line-height:1.6;margin:auto 0}.a b{color:var(--c)}
+.hint{color:var(--mut);font-size:13px;margin-top:14px}
+.ctl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:820px;margin:16px auto 0}
+.ctl .btn{border-radius:12px}
+.mk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-width:820px;margin:8px auto 0}
+.mk .btn{border-radius:12px}
+.tools{max-width:820px;margin:0 auto}
+.empty{text-align:center;padding:60px 20px;color:var(--mut)}
+.list{max-width:820px;margin:24px auto 0;display:none}.list.on{display:block}
+.list article{border-top:1px solid var(--line);padding:14px 0}.list h3{font:600 17px/1.35 Literata,serif;margin:0 0 4px}.list p{margin:0;color:var(--mut)}
+/* mapa */
+.root{display:block;width:max-content;max-width:100%;margin:0 auto;background:var(--wine);color:#fff;font:700 clamp(20px,3vw,28px)/1.2 Literata,serif;padding:16px 28px;border-radius:999px;text-align:center}
+.trunk{width:2px;height:22px;background:var(--line);margin:0 auto}
+.branches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;border-top:2px solid var(--line);padding-top:22px;position:relative}
+.br{border:1.5px solid var(--line);border-top:5px solid var(--c);border-radius:14px;padding:16px;background:var(--card)}
+.br h2{font:700 20px/1.2 Literata,serif;margin:0 0 4px;color:var(--c)}
+.br .go{font-size:14px;padding:6px 12px;min-height:36px;margin:6px 0 10px}
+details{border-left:2px solid var(--c);margin:8px 0 0 4px;padding-left:12px}
+summary{cursor:pointer;font-weight:600;padding:6px 0;list-style:none;display:flex;gap:8px;align-items:baseline}
+summary::-webkit-details-marker{display:none}
+summary:before{content:"+";color:var(--c);font-weight:700;width:12px;flex:none}
+details[open]>summary:before{content:"−"}
+details ul{margin:2px 0 8px;padding-left:18px}details li{margin:3px 0;font-size:15px}
+mark{background:light-dark(#fde68a,#6b5310);color:inherit;border-radius:3px}
+input[type=search]{font:16px Inter,sans-serif;padding:10px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);min-height:44px;flex:1 1 220px}
+.foot{color:var(--mut);font-size:13px;border-top:1px solid var(--line);margin-top:28px;padding-top:14px}
+kbd{font:12px Inter;border:1px solid var(--line);border-radius:4px;padding:0 5px}
+@media(max-width:600px){#chips,#tl{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}#chips>*,#tl>*{flex:none}.branches{grid-template-columns:minmax(0,1fr)}.tabs a{padding:10px 14px}.keys{display:none}}
+@media(prefers-reduced-motion:reduce){.flip{transition:none}.bar i{transition:none}}
+</style>
+</head>
+<body>
+<header><div class="band">
+<h1>Agravo de instrumento</h1>
+<p class="sub">Flashcards e mapa mental do Tema 7 · CPC/2015, Temas 988, 1.022 e 1.059 do STJ</p>
+<nav class="tabs" aria-label="Seções"><a href="#cards" id="t-cards">Flashcards</a><a href="#mapa" id="t-mapa">Mapa mental</a></nav>
+</div></header>
+
+<main>
+<section id="v-cards" class="band">
+<div class="tools">
+<div class="row" id="chips" role="group" aria-label="Filtrar por bloco"></div>
+<div class="row" id="tl" style="margin-top:10px">
+<button class="btn p" id="shuf">Embaralhar</button>
+<button class="btn" id="orig">Ordem original</button>
+<button class="chip" id="onlyRev" aria-pressed="false">Só os que marquei para revisar</button>
+<button class="btn" id="reset">Zerar marcações</button>
+<button class="chip" id="showList" aria-pressed="false">Ver lista</button>
+</div>
+<div class="meta"><span id="count"></span><span id="stats"></span></div>
+<div class="bar"><i id="prog" style="width:0"></i></div>
+</div>
+<div class="stage" id="stage"></div>
+<div class="ctl"><button class="btn" id="prev">← Anterior</button><button class="btn p" id="flipB">Virar</button><button class="btn" id="next">Próxima →</button></div>
+<div class="mk"><button class="btn no" id="mNo">Revisar depois</button><button class="btn ok" id="mOk">Acertei</button></div>
+<p class="hint keys" style="text-align:center">Teclado: <kbd>Espaço</kbd> vira · <kbd>←</kbd> <kbd>→</kbd> navegam · <kbd>1</kbd> revisar · <kbd>2</kbd> acertei. No celular, deslize para os lados.</p>
+<div class="list" id="list"></div>
+</section>
+
+<section id="v-mapa" class="band" hidden>
+<div class="row" style="margin-bottom:18px">
+<input type="search" id="q" placeholder="Buscar no mapa (ex.: preparo, 988, amicus)" aria-label="Buscar no mapa">
+<button class="btn" id="exp">Abrir tudo</button><button class="btn" id="col">Fechar tudo</button>
+</div>
+<span class="root">Agravo de Instrumento</span>
+<div class="trunk"></div>
+<div class="branches" id="branches"></div>
+</section>
+<div class="band"><p class="foot">Material de estudo elaborado a partir do Tema 7 (Prof. Juliano Alves). Confira sempre a letra da lei e a jurisprudência atual.</p></div>
+</main>
+
+<script>
+{
+const B=['Cabimento e Tema 988','Requisitos e tramitação','Atuação do relator','Julgamento e reflexos'];
+const C=[
+[0,'O que é decisão interlocutória (art. 203, §2º)?','Todo pronunciamento decisório que <b>não é sentença</b>: resolve questão incidental sem encerrar a fase cognitiva nem extinguir a execução.'],
+[0,'Qual a regra para interlocutórias fora do rol na fase de conhecimento?','<b>Irrecorribilidade em separado.</b> Não precluem de imediato: são impugnadas em preliminar de apelação ou nas contrarrazões (art. 1.009, §1º). O agravo retido foi extinto.'],
+[0,'O que prevê o inciso I do art. 1.015?','Tutelas provisórias de <b>urgência ou evidência</b>: concessão, indeferimento, modificação ou revogação.'],
+[0,'O que abrange o inciso II do art. 1.015?','Decisões interlocutórias de <b>mérito</b>, como acolher ou rejeitar prescrição e decadência (art. 487, II) e o julgamento antecipado parcial (art. 356).'],
+[0,'Convenção de arbitragem: quando cabe agravo?','Contra a <b>rejeição</b> da alegação (inciso III). Se o juiz a acolhe, extingue o processo por sentença, e o recurso é a apelação.'],
+[0,'O que prevê o inciso IV do art. 1.015?','Acolhimento ou rejeição do <b>incidente de desconsideração da personalidade jurídica</b> (IDPJ).'],
+[0,'Gratuidade de justiça: o que é agravável (inciso V)?','A <b>rejeição</b> do pedido ou o <b>acolhimento da revogação</b>. O deferimento ao autor não é imediatamente agravável pelo réu.'],
+[0,'Como o réu impugna o deferimento da gratuidade?','Pelo <b>art. 100</b>: na contestação, réplica, contrarrazões ou por petição simples em 15 dias úteis (pedido superveniente). Só chega ao tribunal em preliminar de apelação, se a impugnação for rejeitada.'],
+[0,'O que tratam os incisos VI, VII e VIII?','VI: exibição ou posse de documento ou coisa. VII: <b>exclusão</b> de litisconsorte. VIII: rejeição do pedido de limitação do litisconsórcio facultativo numeroso.'],
+[0,'A decisão que rejeita a exclusão de litisconsorte é agravável?','Não há previsão expressa no inciso VII; há divergência. Atrai a <b>taxatividade mitigada</b> se demonstrada a urgência.'],
+[0,'O que abrange o inciso IX?','Decisões que admitem ou inadmitem <b>intervenção de terceiros</b> (assistência, denunciação da lide, chamamento ao processo).'],
+[0,'Cabe recurso da decisão sobre amicus curiae?','A que <b>admite ou solicita</b> é expressamente irrecorrível (art. 138, caput). Sobre a que <b>inadmite</b> o texto silencia, mas prevalece a irrecorribilidade no STF.'],
+[0,'Inciso X e a extensão do STJ','Concessão, modificação ou revogação do <b>efeito suspensivo aos embargos à execução</b>. O STJ admite também contra o <b>indeferimento</b> do efeito suspensivo.'],
+[0,'Inciso XI e a extensão do STJ','Redistribuição do ônus da prova (art. 373, §1º). O STJ estende à decisão que defere ou indefere a <b>inversão do CDC</b> (art. 6º, VIII).'],
+[0,'Por que o inciso XII foi vetado?','Previa agravo contra a <b>conversão de ação individual em coletiva</b>; caiu junto com o art. 333. Razões: mudança de rito sem critérios objetivos e contra a vontade das partes, tema para codificação coletiva, existência do IRDR. A OAB apoiou o veto.'],
+[0,'Quais hipóteses do próprio CPC entram pelo inciso XIII?','Art. 354, p.ú. (<b>extinção parcial</b> sem mérito); art. 356, §5º (<b>julgamento parcial de mérito</b>); art. 1.037, §13 (<b>distinguishing</b> em repetitivo sobrestado).'],
+[0,'Cite leis extravagantes que preveem agravo','<b>MS</b> (Lei 12.016, art. 7º, §1º): liminar. <b>Ação Popular</b> (Lei 4.717, art. 19, §1º): interlocutórias em geral. <b>Improbidade</b> (Lei 8.429): indisponibilidade de bens (art. 16, §9º) e interlocutórias em geral, inclusive rejeição de preliminares (art. 17, §21).'],
+[0,'Qual a tese do Tema 1.022/STJ?','Cabe agravo contra <b>todas as interlocutórias</b> na recuperação judicial e na falência, por terem natureza de liquidação e execução (negocial ou coletiva), o que atrai o art. 1.015, p.ú.'],
+[0,'Tema 1.022: modulação e positivação','Decisões não agravadas antes da tese <b>não precluíram</b>. A Lei 14.112/2020 positivou a regra no art. 189, §1º, II, da Lei 11.101/2005.'],
+[0,'O que diz o art. 1.015, parágrafo único?','Cabe agravo contra <b>qualquer interlocutória</b> na liquidação, no cumprimento de sentença, na execução e no inventário e partilha. Não agravada em 15 dias úteis, <b>preclui</b>.'],
+[0,'Quais eram as três correntes sobre o rol antes do Tema 988?','1) <b>Taxatividade estrita</b> (numerus clausus, levando ao uso de MS); 2) <b>taxatividade com interpretação extensiva/analógica</b> (Didier e Carneiro da Cunha); 3) <b>rol exemplificativo</b>.'],
+[0,'Qual a tese do Tema 988/STJ?','<b>Taxatividade mitigada</b> (a “quarta via”): cabe agravo fora do rol quando há urgência decorrente da <b>inutilidade do julgamento da questão na apelação</b>. Corte Especial, REsps 1.696.396/MT e 1.704.520/MT.'],
+[0,'Que urgência autoriza a mitigação do rol?','Não é mera inconveniência ou demora. É a <b>inutilidade do exame futuro</b>: decidir só na apelação não reverteria o prejuízo prático.'],
+[0,'Exemplos clássicos de taxatividade mitigada','Rejeição da alegação de <b>incompetência</b> (art. 64); indeferimento de <b>segredo de justiça</b>; indeferimento de <b>prova perecível</b> (testemunha idosa ou doente, vestígios que vão desaparecer).'],
+[0,'De quem é o ônus de demonstrar a urgência?','Do <b>agravante</b>, de forma cabal e preliminar nas razões. Sem isso, o recurso <b>não é conhecido</b>.'],
+[0,'Críticas doutrinárias ao Tema 988','Conceito vago de urgência, mais subjetividade dos relatores, sobrecarga dos tribunais e mitigação da opção política do legislador de 2015.'],
+[0,'A partir de quando se aplica o Tema 988?','Às interlocutórias proferidas após a publicação do acórdão, em <b>19/12/2018</b>.'],
+[0,'Como funciona a preclusão no Tema 988?','<b>Não conhecido</b> por falta de urgência: a matéria não preclui (vai para apelação ou contrarrazões). <b>Conhecido e julgado</b> no mérito: preclui.'],
+[0,'Quando cabe mandado de segurança contra interlocutória?','Só excepcionalmente, como sucedâneo residual. Limites: Súmula 267/STF e art. 5º, II, da Lei 12.016. Admitido contra decisão <b>teratológica, ilegal ou abusiva</b> com dano irreparável.'],
+[0,'O que diz a Súmula 202 do STJ?','O <b>terceiro prejudicado</b> pode impetrar MS contra ato judicial sem precisar interpor recurso antes.'],
+[1,'Onde se interpõe o agravo e o que a petição deve conter (art. 1.016)?','<b>Diretamente no tribunal.</b> Nomes das partes; exposição do fato e do direito; razões e pedido de reforma ou invalidação; nome e endereço completo dos advogados.'],
+[1,'Qual o prazo do agravo e o termo inicial?','<b>15 dias úteis</b> (arts. 1.003, §5º, e 219), contados da intimação (arts. 1.003, caput, e 231). MP, Fazenda e Defensoria têm intimação pessoal.'],
+[1,'Quem tem prazo em dobro?','MP (180), Defensoria (186), Fazenda (183) e <b>litisconsortes com procuradores de escritórios distintos em autos físicos</b> (229).'],
+[1,'Quando o prazo em dobro dos litisconsortes não se aplica?','Se, havendo só dois réus, <b>só um se defende</b> (art. 229, §1º); e em <b>autos eletrônicos</b> (§2º).'],
+[1,'Quais as cinco formas de protocolo (art. 1.017, §2º)?','1) Secretaria do tribunal; 2) comarca, seção ou subseção de origem; 3) correio com AR; 4) fac-símile; 5) outra forma legal, como o meio eletrônico (Lei 11.419/2006).'],
+[1,'Que efeito tem a data de postagem no correio?','Equivale à <b>data da interposição</b> (art. 1.003, §4º). É regra federal, independente de norma local.'],
+[1,'Feriado local não comprovado no protocolo: e agora?','Pela <b>Lei 14.939/2024</b> (art. 1.003, §6º), o tribunal intima para sanar, ou desconsidera a falha se o feriado já constar do sistema eletrônico.'],
+[1,'Gratuidade pedida no recurso: e o preparo?','Fica dispensado até o relator decidir (art. 99, §7º). O mesmo vale no agravo contra indeferimento ou revogação da gratuidade (art. 101, §1º).'],
+[1,'Preparo recolhido a menor: consequência?','Intimação para <b>complementar em 5 dias úteis</b> (art. 1.007, §2º).'],
+[1,'Nenhum preparo comprovado no protocolo: consequência?','<b>Recolhimento em dobro</b> (§4º), em 5 dias úteis por analogia. Se recolher o dobro a menor, não há nova chance: <b>deserção</b> (§5º).'],
+[1,'Erro no preenchimento da guia gera deserção?','Não sem antes <b>intimar para sanar em 5 dias úteis</b> (art. 1.007, §7º). Em autos eletrônicos, dispensa-se o porte de remessa e retorno (§3º).'],
+[1,'Quais as peças obrigatórias em autos físicos (art. 1.017, I)?','Inicial e contestação; petição que gerou a decisão; a decisão agravada; certidão de intimação ou outro documento que prove a tempestividade; procurações de agravante e agravado.'],
+[1,'E se uma peça obrigatória não existir no processo?','O advogado apresenta <b>declaração de inexistência</b>, sob sua responsabilidade pessoal (art. 1.017, II).'],
+[1,'A falta da certidão de intimação é fatal?','Não, para o STJ, se a tempestividade puder ser aferida por outro meio idôneo (DJe, certidão de carga, interposição dentro do prazo contado da prolação).'],
+[1,'Autos eletrônicos: precisa juntar as peças?','<b>Não.</b> Dispensam-se as peças dos incisos I e II (art. 1.017, §5º); o agravante pode juntar outras que julgar úteis.'],
+[1,'Peça faltando ou vício formal: o que o relator faz?','Concede <b>5 dias úteis</b> para sanar (arts. 1.017, §3º, e 932, p.ú.).'],
+[1,'Quais os limites da sanabilidade?','Não supre <b>intempestividade</b> nem permite complementar ou ampliar <b>razões ou pedido</b>: incide a preclusão consumativa.'],
+[1,'Comunicação ao juízo de origem (art. 1.018)','<b>Autos físicos:</b> obrigatória em 3 dias úteis (cópia da petição, comprovante e lista de documentos). <b>Autos eletrônicos:</b> mera faculdade.'],
+[1,'Falta da comunicação em autos físicos: o relator pode reconhecer de ofício?','<b>Não.</b> Só gera inadmissibilidade se <b>arguida e provada pelo agravado</b> (art. 1.018, §3º).'],
+[1,'Quais os efeitos do juízo de retratação?','<b>Total:</b> o agravo fica prejudicado (1.018, §1º, c/c 932, III). <b>Parcial:</b> o agravo segue na parte mantida, e a nova decisão pode ser agravada por quem sofreu o novo prejuízo.'],
+[2,'Qual o prazo do relator para as providências iniciais?','<b>5 dias úteis</b>, prazo impróprio (art. 1.019, caput), salvo julgamento monocrático imediato (art. 932).'],
+[2,'Como funciona a prevenção do relator?','O primeiro recurso torna prevento o relator para os posteriores no mesmo processo ou em conexo (art. 930, p.ú.). A extensão ao colegiado vem dos regimentos internos.'],
+[2,'Quando o relator julga monocraticamente (art. 932)?','III: não conhece (inadmissível ou prejudicado). IV: nega provimento se contrário a súmula ou precedente qualificado. V: dá provimento se a decisão contraria esses precedentes, <b>após oportunizar contrarrazões</b>. Súmula 568/STJ por analogia.'],
+[2,'O agravo tem efeito suspensivo automático?','<b>Não.</b> O relator só o concede a <b>requerimento</b> (princípio dispositivo). O efeito é conservativo: paralisa a eficácia da decisão, e o processo segue no resto.'],
+[2,'Requisitos do efeito suspensivo (art. 995, p.ú.)','Cumulativos: <b>probabilidade de provimento</b> + <b>risco de dano grave</b>, de difícil ou impossível reparação.'],
+[2,'O que é a tutela antecipada recursal?','O antigo “<b>efeito suspensivo ativo</b>”: medida satisfativa contra decisões de conteúdo negativo (ex.: indeferimento de gratuidade, de exclusão de litisconsorte, de prova). Depende de requerimento.'],
+[2,'Requisitos da tutela de urgência recursal','Probabilidade do direito + perigo de dano (art. 300). Limite: não se concede se houver <b>perigo de irreversibilidade</b> (§3º).'],
+[2,'Tutela de evidência no agravo (art. 311, II)','Fatos comprováveis só por documento + tese de <b>repetitivo</b> (inclui IRDR) ou <b>súmula vinculante</b>. Dispensa perigo de dano.'],
+[2,'Como o agravado é intimado para a contraminuta?','Prazo de <b>15 dias úteis</b>. Sem advogado: pessoalmente, por carta com AR. Com advogado: pelo Diário da Justiça ou carta com AR ao advogado.'],
+[2,'Agravado juntou documentos novos: o que ocorre?','O agravante é intimado para se manifestar em <b>15 dias úteis</b> (arts. 437, §1º, e 10), evitando decisão-surpresa.'],
+[2,'Como atua o Ministério Público no agravo?','Intimação pessoal, de preferência eletrônica, para parecer em <b>15 dias úteis</b>. É prazo próprio: <b>sem dobra</b>. Sem manifestação, o processo segue (art. 180, §1º).'],
+[2,'Como se impugna a liminar do relator?','Por <b>agravo interno</b> (art. 1.021), em 15 dias úteis, impugnando especificamente os fundamentos. Superou o art. 527, p.ú., do CPC/1973, que a tinha por irrecorrível.'],
+[2,'Quando o agravo interno contra a liminar fica prejudicado?','Quando o colegiado <b>julga o agravo de instrumento antes</b>: o interno perde o objeto.'],
+[2,'Multa do agravo interno (art. 1.021, §§4º e 5º)','<b>1% a 5%</b> do valor atualizado da causa se manifestamente inadmissível ou improcedente por unanimidade. Não é automática: exige fundamentação (STJ). Fazenda e beneficiário da gratuidade pagam ao final.'],
+[3,'Prazo para o relator pedir dia (art. 1.020)','<b>Até 1 mês</b>, contado da intimação do agravado.'],
+[3,'Existe revisor no agravo de instrumento?','Não. Já não havia no CPC/1973 para o agravo, e o CPC/2015 extinguiu a figura no sistema recursal. O <b>relatório escrito</b> continua obrigatório.'],
+[3,'Cabe sustentação oral no agravo?','Sim, por <b>15 minutos</b>, quando a decisão versar sobre <b>tutela provisória</b> (art. 937, VIII). O inciso IX abre para hipóteses regimentais, como a decisão parcial de mérito.'],
+[3,'Por que a doutrina defende sustentação oral contra decisão parcial de mérito?','Didier e Carneiro da Cunha apontam <b>violação à isonomia</b>: há sustentação na apelação contra sentença, mas não no agravo que julga em definitivo um capítulo do mérito. Muitos regimentos já a admitem.'],
+[3,'Efeito translativo x causa madura','<b>Translativo:</b> conhecimento de ofício de matéria de ordem pública. <b>Causa madura</b> (1.013, §3º): o tribunal julga desde logo mérito não apreciado em 1º grau.'],
+[3,'Aplica-se a causa madura ao agravo?','Há precedentes do STJ que admitem, se a causa estiver instruída. Crítica: o art. 1.013, §3º, foi pensado para a apelação e suprimiria um grau de cognição.'],
+[3,'Quando há julgamento ampliado no agravo (art. 942, §3º, II)?','Resultado <b>não unânime</b> que <b>reforma</b> decisão parcial de mérito. Se confirmar a decisão, não se aplica.'],
+[3,'Decisão parcial de mérito faz coisa julgada?','Sim, material, quando mantida ou não impugnada. Cabe <b>ação rescisória</b> (art. 966, caput, c/c 356, §3º).'],
+[3,'Sentença superveniente: o que acontece com agravo sobre tutela provisória?','<b>Critério da cognição</b> (STJ): a sentença exauriente absorve a decisão sumária, e o agravo perde o objeto. O critério da hierarquia foi superado.'],
+[3,'Qual o teste para as demais interlocutórias após a sentença?','Verificar se o provimento do agravo pode <b>afetar a validade ou o conteúdo da sentença</b>.'],
+[3,'Em que casos o agravo subsiste à sentença?','Competência e arbitragem; intervenção de terceiros (para admitir o terceiro); decisão parcial de mérito; gratuidade (custas); astreintes e multas coercitivas.'],
+[3,'Requisitos da majoração de honorários recursais (art. 85, §11)','<b>Fixação prévia</b> na origem (AgInt nos EREsp 1.539.725/DF) + <b>não conhecimento ou desprovimento integral</b> (Tema 1.059). Provimento total ou parcial afasta.'],
+[3,'Majoração x fixação inaugural de honorários','Se o provimento do agravo <b>extingue o processo ou exclui um capítulo</b> (exceção de pré-executividade, exclusão de litisconsorte), o tribunal fixa honorários pela primeira vez.'],
+[3,'Súmula 735/STF e suas nuances','“Não cabe recurso extraordinário contra acórdão que defere medida liminar.” O STJ aplica ao REsp por analogia, salvo violação direta da lei da tutela provisória sem reexame de fatos (Súm. 7). <b>Não incide</b> no agravo contra decisão parcial de mérito.']
+];
+const M=[
+{b:0,t:'Cabimento e Tema 988',s:[
+['Regra geral',['Interlocutória: art. 203, §2º','Irrecorribilidade em separado na fase de conhecimento','Matéria fora do rol vai para apelação/contrarrazões (1.009, §1º)','Agravo retido extinto']],
+['Rol do art. 1.015',['I tutelas provisórias · II mérito (prescrição, 356)','III rejeição da arbitragem · IV IDPJ','V rejeição/revogação da gratuidade (deferimento: art. 100)','VI exibição · VII exclusão de litisconsorte · VIII limitação do litisconsórcio','IX intervenção de terceiros (amicus curiae: irrecorrível, art. 138)','X efeito suspensivo nos embargos (STJ: também indeferimento)','XI ônus da prova (STJ: inversão do CDC)','XII vetado (conversão em coletiva)','XIII outros casos: 354 p.ú., 356 §5º, 1.037 §13']],
+['Leis especiais',['MS: liminar (Lei 12.016, 7º §1º)','Ação Popular: interlocutórias em geral','Improbidade: indisponibilidade e interlocutórias (16 §9º, 17 §21)','RJ e falência: todas (Tema 1.022; Lei 11.101, art. 189 §1º II)']],
+['Fases posteriores',['Art. 1.015, p.ú.: liquidação, cumprimento, execução, inventário','Qualquer interlocutória é agravável','Não agravada em 15 dias úteis: preclui']],
+['Tema 988 (taxatividade mitigada)',['Quarta via, contra 3 correntes anteriores','Urgência = inutilidade do exame na apelação','Ex.: incompetência, segredo de justiça, prova perecível','Ônus argumentativo do agravante','Vale para decisões após 19/12/2018','Não conhecido: não preclui · julgado: preclui','Críticas: vagueza, subjetividade, sobrecarga']],
+['Mandado de segurança residual',['Excepcional: Súm. 267/STF e Lei 12.016, 5º II','Decisão teratológica com dano irreparável','Terceiro prejudicado: Súm. 202/STJ']]]},
+{b:1,t:'Requisitos e tramitação',s:[
+['Petição (art. 1.016)',['Direto no tribunal','Partes, fato e direito, razões e pedido, advogados']],
+['Prazo',['15 dias úteis da intimação (1.003, 219, 231)','Dobro: MP, Defensoria, Fazenda, litisconsortes em autos físicos','Sem dobro: só um de dois réus defende; autos eletrônicos']],
+['Protocolo e feriado',['5 formas (1.017, §2º)','Postagem = interposição (1.003, §4º)','Feriado local: Lei 14.939/2024 permite sanar']],
+['Preparo (art. 1.007)',['Comprovar no ato','Insuficiente: completar em 5 dias','Ausente: em dobro; falhou de novo: deserção','Erro na guia: intimar antes','Gratuidade no recurso: dispensa até decisão (99 §7º, 101 §1º)']],
+['Peças (art. 1.017)',['Físicos: inicial, contestação, petição, decisão, certidão, procurações','Peça inexistente: declaração do advogado','Certidão suprível por outro meio (STJ)','Eletrônicos: dispensadas (§5º)']],
+['Vícios sanáveis',['5 dias úteis (932 p.ú., 1.017 §3º)','Não supre intempestividade nem novas razões']],
+['Comunicação e retratação (1.018)',['Físicos: 3 dias úteis, se o agravado arguir e provar','Eletrônicos: faculdade','Retratação total: agravo prejudicado','Parcial: segue no restante; nova decisão agravável']]]},
+{b:2,t:'Atuação do relator',s:[
+['Providências iniciais',['5 dias úteis, prazo impróprio (1.019)','Prevenção pelo 1º recurso (930 p.ú.)','Aprecia tutelas provisórias (932, II)']],
+['Julgamento monocrático',['932 III não conhece · IV nega · V dá provimento','Provimento exige chance de contrarrazões','Súm. 568/STJ por analogia']],
+['Efeito suspensivo',['Não é automático; depende de pedido','Conservativo','Probabilidade de provimento + risco de dano (995 p.ú.)']],
+['Tutela antecipada recursal',['“Efeito suspensivo ativo”, contra decisão negativa','Urgência: art. 300, limite da irreversibilidade','Evidência: art. 311, II']],
+['Contraditório e MP',['Contraminuta em 15 dias úteis','Documentos novos: agravante em 15 dias','MP: 15 dias úteis, prazo próprio, sem dobra']],
+['Agravo interno (1.021)',['Contra liminar do relator, 15 dias úteis','Prejudicado se o agravo for julgado antes','Multa de 1% a 5% fundamentada; Fazenda e gratuidade pagam ao final']]]},
+{b:3,t:'Julgamento e reflexos',s:[
+['Sessão de julgamento',['Pedido de dia em até 1 mês (1.020)','Sem revisor; relatório obrigatório','Sustentação oral de 15 min em tutela provisória (937 VIII)','Regimentos: decisão parcial de mérito (937 IX)']],
+['Causa madura',['Diferente do efeito translativo','STJ tem precedentes admitindo','Crítica: suprime grau de cognição']],
+['Decisão parcial de mérito',['Ampliação só se não unânime e reformar (942 §3º II)','Coisa julgada material','Ação rescisória (966 c/c 356 §3º)']],
+['Sentença superveniente',['Tutela provisória: critério da cognição, perde o objeto','Demais: afeta validade ou conteúdo da sentença?','Subsiste: competência, arbitragem, terceiros, mérito parcial, gratuidade, astreintes']],
+['Honorários',['Majoração exige fixação prévia + desprovimento (Tema 1.059)','Provimento afasta a majoração','Extinção ou exclusão: fixação inaugural']],
+['Súmula 735/STF',['Não cabe RE contra acórdão que defere liminar','STJ estende ao REsp, salvo violação direta de lei','Não se aplica à decisão parcial de mérito']]]}
+];
+const $=id=>document.getElementById(id);
+const st={f:-1,order:C.map((_,i)=>i),i:0,flip:false,rev:false,mk:{}};
+try{const s=JSON.parse(localStorage.getItem('agravo7')||'{}');if(s.mk)st.mk=s.mk;if(Number.isInteger(s.f))st.f=s.f}catch(e){}
+const save=()=>{try{localStorage.setItem('agravo7',JSON.stringify({mk:st.mk,f:st.f}))}catch(e){}};
+const col=b=>`var(--b${b})`;
+const pool=()=>st.order.filter(i=>(st.f<0||C[i][0]===st.f)&&(!st.rev||st.mk[i]===0));
+$('chips').innerHTML=['Todos',...B].map((n,k)=>`<button class="chip" data-f="${k-1}">${k?['I','II','III','IV'][k-1]+' · ':''}${n}</button>`).join('');
+function render(){
+ const p=pool();if(st.i>=p.length)st.i=Math.max(0,p.length-1);
+ document.querySelectorAll('#chips .chip').forEach(c=>c.setAttribute('aria-pressed',+c.dataset.f===st.f));
+ $('onlyRev').setAttribute('aria-pressed',st.rev);
+ const ids=C.map((_,i)=>i).filter(i=>st.f<0||C[i][0]===st.f);
+ const ok=ids.filter(i=>st.mk[i]===1).length,no=ids.filter(i=>st.mk[i]===0).length;
+ $('stats').textContent=`${ok} acertei · ${no} para revisar · ${ids.length-ok-no} sem marcação`;
+ $('prog').style.width=(ids.length?ok/ids.length*100:0)+'%';
+ ['prev','next','flipB','mNo','mOk'].forEach(k=>$(k).disabled=!p.length);
+ if(!p.length){$('count').textContent='0 fichas';$('stage').innerHTML=`<div class="empty">${st.rev?'Nenhuma ficha marcada para revisar neste filtro. Bom sinal.':'Nenhuma ficha.'}</div>`;renderList(p);return}
+ const n=p[st.i],[b,q,a]=C[n],m=st.mk[n];
+ $('count').textContent=`Ficha ${st.i+1} de ${p.length}`;
+ const tag=`<div class="tag" style="--c:${col(b)}"><span>Bloco ${['I','II','III','IV'][b]} · ${B[b]}</span><span>${m===1?'✓ acertei':m===0?'↺ revisar':''}</span></div>`;
+ $('stage').innerHTML=`<div class="flip${st.flip?' on':''}" id="fl" role="button" tabindex="0" aria-label="Virar ficha" style="--c:${col(b)}"><div class="face" style="--c:${col(b)}">${tag}<p class="q">${q}</p><p class="hint">Toque para ver a resposta</p></div><div class="face back" style="--c:${col(b)}">${tag}<p class="a">${a}</p></div></div>`;
+ $('prev').disabled=st.i===0;$('next').disabled=st.i>=p.length-1;
+ renderList(p);
+}
+function renderList(p){if(!$('list').classList.contains('on'))return;$('list').innerHTML=p.map((n,k)=>`<article><h3>${k+1}. ${C[n][1]}</h3><p>${C[n][2]}</p></article>`).join('')}
+const go=d=>{const p=pool();const j=st.i+d;if(j<0||j>=p.length)return;st.i=j;st.flip=false;render()};
+const flip=()=>{st.flip=!st.flip;const f=$('fl');if(f)f.classList.toggle('on',st.flip)};
+const mark=v=>{const p=pool();if(!p.length)return;const n=p[st.i];st.mk[n]=v;save();st.flip=false;
+ if(st.rev&&v===1){render();return}
+ if(st.i<p.length-1)st.i++;render()};
+$('chips').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;st.f=+c.dataset.f;st.i=0;st.flip=false;save();render()});
+$('shuf').onclick=()=>{const o=st.order.slice();for(let i=o.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[o[i],o[j]]=[o[j],o[i]]}st.order=o;st.i=0;st.flip=false;render()};
+$('orig').onclick=()=>{st.order=C.map((_,i)=>i);st.i=0;st.flip=false;render()};
+$('onlyRev').onclick=()=>{st.rev=!st.rev;st.i=0;st.flip=false;render()};
+$('reset').onclick=()=>{const b=$('reset');if(b.dataset.c){st.mk={};save();delete b.dataset.c;b.textContent='Zerar marcações';render()}else{b.dataset.c=1;b.textContent='Confirmar: zerar tudo?';setTimeout(()=>{delete b.dataset.c;b.textContent='Zerar marcações'},4000)}};
+$('showList').onclick=()=>{const l=$('list');l.classList.toggle('on');$('showList').setAttribute('aria-pressed',l.classList.contains('on'));render()};
+$('prev').onclick=()=>go(-1);$('next').onclick=()=>go(1);$('flipB').onclick=flip;
+$('mNo').onclick=()=>mark(0);$('mOk').onclick=()=>mark(1);
+$('stage').addEventListener('click',e=>{if(e.target.closest('#fl'))flip()});
+let sx=null,sy=0;
+$('stage').addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+$('stage').addEventListener('touchend',e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;sx=null;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){e.preventDefault();go(dx<0?1:-1)}});
+document.addEventListener('keydown',e=>{if($('v-cards').hidden||e.target.matches('input'))return;
+ if(e.key===' '||e.key==='Enter'){if(e.target.matches('button:not(#fl)'))return;e.preventDefault();flip()}
+ else if(e.key==='ArrowRight')go(1);else if(e.key==='ArrowLeft')go(-1);else if(e.key==='1')mark(0);else if(e.key==='2')mark(1)});
+/* mapa */
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function drawMap(term){
+ const t=(term||'').trim().toLowerCase();
+ const hi=s=>{const e=esc(s);if(!t)return e;const i=s.toLowerCase().indexOf(t);return i<0?e:esc(s.slice(0,i))+'<mark>'+esc(s.slice(i,i+t.length))+'</mark>'+esc(s.slice(i+t.length))};
+ $('branches').innerHTML=M.map(br=>`<div class="br" style="--c:${col(br.b)}"><h2>${['I','II','III','IV'][br.b]} · ${br.t}</h2><button class="btn go" data-b="${br.b}">Estudar fichas deste bloco</button>${br.s.map(([h,ls])=>{const hit=t&&(h+ls.join(' ')).toLowerCase().includes(t);return `<details${hit?' open':''}><summary>${hi(h)}</summary><ul>${ls.map(l=>`<li>${hi(l)}</li>`).join('')}</ul></details>`}).join('')}</div>`).join('');
+}
+drawMap('');
+$('q').addEventListener('input',e=>drawMap(e.target.value));
+$('exp').onclick=()=>document.querySelectorAll('#branches details').forEach(d=>d.open=true);
+$('col').onclick=()=>document.querySelectorAll('#branches details').forEach(d=>d.open=false);
+$('branches').addEventListener('click',e=>{const g=e.target.closest('.go');if(!g)return;st.f=+g.dataset.b;st.i=0;st.flip=false;st.rev=false;save();location.hash='cards';route()});
+function route(){const m=location.hash==='#mapa';$('v-cards').hidden=m;$('v-mapa').hidden=!m;$('t-cards').setAttribute('aria-current',!m);$('t-mapa').setAttribute('aria-current',m);render()}
+window.addEventListener('hashchange',route);
+route();
+}
+</script>
+</body>
+</html>
